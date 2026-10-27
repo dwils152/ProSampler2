@@ -1,0 +1,103 @@
+[workspace]
+name = "project-template"
+version = "0.1.0"
+description = "Reproducible computational research starter"
+channels = ["conda-forge", "bioconda"]
+platforms = ["linux-64"]
+
+[dependencies]
+python = "3.11.11.*"
+nextflow = "26.04.6.*"
+openjdk = "17.*"
+pytest = "8.3.4.*"
+hatchling = ">=1.27,<2"
+ruff = ">=0.14,<1"
+
+[pypi-dependencies]
+research-project = { path = "pipeline/bin", editable = true }
+duckdb = ">=1.4,<2"
+
+[activation.env]
+NXF_SYNTAX_PARSER = "v2"
+PYTHONNOUSERSITE = "1"
+PYTHONDONTWRITEBYTECODE = "1"
+
+[tasks.test]
+cmd = "python -m pytest -q -c pipeline/bin/pyproject.toml pipeline/bin/tests"
+description = "Test runner safeguards and example artifact validation"
+
+[tasks.smoke]
+cmd = "python -m research_project.runner smoke"
+description = "Execute and audit both Nextflow example processes"
+
+[tasks.verify]
+cmd = "python -m research_project.runner verify"
+description = "Run unit tests, then a real Nextflow smoke workflow"
+
+[tasks.experiment]
+cmd = "python -m research_project.runner run"
+description = "Freeze and execute a new recorded experiment"
+
+[tasks.status]
+cmd = "python -m research_project.runner status"
+description = "Read the recorded state of a run"
+
+[tasks.audit]
+cmd = "python -m research_project.runner audit"
+description = "Verify successful execution, provenance and workflow outputs"
+
+[tasks.handoff]
+cmd = "python -m research_project.runner handoff"
+description = "Record the objective and next action for an existing run"
+
+[tasks.latest-handoff]
+cmd = "python -m research_project.runner latest-handoff"
+description = "Read the most recent handoff without launching work"
+
+[tasks.hook-pre-edit]
+cmd = "python -m research_project.experiment_commit_hook"
+description = "Agent hook: checkpoint the previous experiment before design edits"
+
+[tasks.hook-pre-shell]
+cmd = "python -m research_project.launch_hook"
+description = "Agent hook: ask for a Git commit before an experiment launches on a dirty tree"
+
+[tasks.check-layout]
+cmd = "python -m research_project.layout"
+description = "Check the directory layout against .agents/layout.toml (--fix only removes caches)"
+
+[tasks.hook-layout-start]
+cmd = "python -m research_project.layout --hook start"
+description = "Agent hook: report layout problems at session start"
+
+[tasks.hook-layout-stop]
+cmd = "python -m research_project.layout --hook stop"
+description = "Agent hook: ask the agent to resolve layout problems before it stops"
+
+[tasks.worktree]
+cmd = "python -m research_project.worktrees"
+description = "Create, list or remove Git worktrees under code/.worktrees/"
+
+[tasks.hook-worktree-create]
+cmd = "python -m research_project.worktrees hook-create"
+description = "Agent hook: create a requested worktree under code/.worktrees/"
+
+[tasks.hook-worktree-remove]
+cmd = "python -m research_project.worktrees hook-remove"
+description = "Agent hook: remove a worktree under code/.worktrees/"
+
+[tasks.hook-post-edit]
+cmd = "python -m research_project.format_hook"
+description = "Agent hook: format Python files named by a completed edit"
+
+[tasks.nextflow]
+cmd = "nextflow"
+description = "Access Nextflow with the v2 syntax parser"
+
+[tasks.format-code]
+cmd = "ruff format"
+description = "Format Python source files"
+
+[tasks.catalog]
+cmd = "python -m research_project.catalog"
+description = "Index research records and query DuckDB snapshots"

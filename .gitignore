@@ -1,0 +1,28 @@
+# Runtime state and environments
+**/.pixi/
+**/__pycache__/
+**/.pytest_cache/
+**/.ruff_cache/
+**/*.pyc
+**/.nextflow/
+**/.nextflow.*
+**/dist/
+**/*.egg-info/
+.codex/hooks.json
+.claude/settings.local.json
+.env
+.env.*
+
+# Keep directory contracts, not generated payloads
+code/data/raw/*
+!code/data/raw/README.md
+code/data/store/*
+!code/data/store/README.md
+code/launches/*
+!code/launches/README.md
+code/work/
+code/.worktrees/
+code/results/runs/*
+!code/results/runs/README.md
+code/results/final/*
+!code/results/final/README.md

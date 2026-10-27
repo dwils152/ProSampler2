@@ -1,0 +1,13 @@
+# Catalog execution bounds. Scientific metadata and metric definitions belong
+# in the selected Nextflow configuration and are frozen in each run manifest.
+auto_refresh = true
+refresh_timeout_seconds = 30
+query_timeout_seconds = 10
+threads = 2
+memory_limit = "512MB"
+max_requests_per_refresh = 256
+max_runs_per_rebuild = 10000
+max_query_rows = 1000
+max_document_bytes = 4194304
+max_notes_per_run = 10000
+snapshots_to_keep = 3

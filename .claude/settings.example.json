@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "hooks": {
+    "WorktreeCreate": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pixi run --locked --manifest-path \"$CLAUDE_PROJECT_DIR/code/pixi.toml\" hook-worktree-create",
+            "timeout": 600,
+            "statusMessage": "Creating a worktree under code/.worktrees and installing its environment"
+          }
+        ]
+      }
+    ],
+    "WorktreeRemove": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pixi run --locked --manifest-path \"$CLAUDE_PROJECT_DIR/code/pixi.toml\" hook-worktree-remove",
+            "timeout": 60,
+            "statusMessage": "Removing the worktree under code/.worktrees"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pixi run --locked --manifest-path \"$CLAUDE_PROJECT_DIR/code/pixi.toml\" latest-handoff",
+            "timeout": 15,
+            "statusMessage": "Reading the latest project handoff"
+          },
+          {
+            "type": "command",
+            "command": "pixi run --locked --manifest-path \"$CLAUDE_PROJECT_DIR/code/pixi.toml\" hook-layout-start",
+            "timeout": 30,
+            "statusMessage": "Checking the directory layout"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Edit|MultiEdit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pixi run --locked --manifest-path \"$CLAUDE_PROJECT_DIR/code/pixi.toml\" hook-pre-edit",
+            "timeout": 30,
+            "statusMessage": "Checking the previous experiment checkpoint"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pixi run --locked --manifest-path \"$CLAUDE_PROJECT_DIR/code/pixi.toml\" hook-pre-shell",
+            "timeout": 15,
+            "statusMessage": "Checking for uncommitted changes before a launch"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|MultiEdit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pixi run --locked --manifest-path \"$CLAUDE_PROJECT_DIR/code/pixi.toml\" hook-post-edit",
+            "timeout": 30,
+            "statusMessage": "Formatting edited Python files"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pixi run --locked --manifest-path \"$CLAUDE_PROJECT_DIR/code/pixi.toml\" hook-layout-stop",
+            "timeout": 30,
+            "statusMessage": "Checking the directory layout"
+          }
+        ]
+      }
+    ]
+  }
+}

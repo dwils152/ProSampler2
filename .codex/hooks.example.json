@@ -1,0 +1,73 @@
+{
+  "description": "Load project state, checkpoint prior experiments, and format Python edits. Start Codex in the project root.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pixi run --locked --manifest-path code/pixi.toml latest-handoff",
+            "timeout": 15,
+            "statusMessage": "Reading the latest project handoff"
+          },
+          {
+            "type": "command",
+            "command": "pixi run --locked --manifest-path code/pixi.toml hook-layout-start",
+            "timeout": 30,
+            "statusMessage": "Checking the directory layout"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "^apply_patch$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pixi run --locked --manifest-path code/pixi.toml hook-pre-edit",
+            "timeout": 30,
+            "statusMessage": "Checking the previous experiment checkpoint"
+          }
+        ]
+      },
+      {
+        "matcher": "^Bash$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pixi run --locked --manifest-path code/pixi.toml hook-pre-shell",
+            "timeout": 15,
+            "statusMessage": "Checking for uncommitted changes before a launch"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "^apply_patch$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pixi run --locked --manifest-path code/pixi.toml hook-post-edit",
+            "timeout": 30,
+            "statusMessage": "Formatting edited Python files"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pixi run --locked --manifest-path code/pixi.toml hook-layout-stop",
+            "timeout": 30,
+            "statusMessage": "Checking the directory layout"
+          }
+        ]
+      }
+    ]
+  }
+}

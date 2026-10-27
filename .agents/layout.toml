@@ -1,0 +1,97 @@
+# Directory layout contract, shared by every agent and people.
+#
+# `pixi run --locked --manifest-path code/pixi.toml check-layout` compares the
+# checkout with this file; the cleanup-layout skill resolves what it reports.
+# Change this file together with the README layout, and only for an intended
+# structural change. Paths are relative to the project root.
+
+# Paths that must exist.
+required = [
+    "README.md",
+    "AGENTS.md",
+    "CLAUDE.md",
+    ".gitignore",
+    ".agents/skills",
+    ".claude/skills",
+    ".claude/settings.example.json",
+    ".codex/hooks.example.json",
+    ".gitmodules",
+    "manuscript",
+    "code/pixi.toml",
+    "code/pixi.lock",
+    "code/docs",
+    "code/pipeline/main.nf",
+    "code/pipeline/nextflow.config",
+    "code/pipeline/conf",
+    "code/pipeline/bin/pyproject.toml",
+    "code/pipeline/bin/research_project",
+    "code/pipeline/bin/tests",
+    "code/data/raw/README.md",
+    "code/data/store/README.md",
+    "code/launches/README.md",
+    "code/results/runs/README.md",
+    "code/results/final/README.md",
+]
+
+# Directories whose direct entries are limited to these names. Caches
+# (__pycache__, .pytest_cache, .ruff_cache) are reported as cleanup items.
+[allowed_entries]
+"." = [
+    ".git",
+    ".gitignore",
+    ".gitmodules",
+    ".agents",
+    ".claude",
+    ".codex",
+    "README.md",
+    "AGENTS.md",
+    "CLAUDE.md",
+    "code",
+    "manuscript",
+]
+".agents" = ["skills", "layout.toml"]
+".claude" = ["skills", "settings.example.json", "settings.json", "settings.local.json"]
+".codex" = ["hooks.example.json", "hooks.json", "config.toml"]
+"code" = [
+    "pixi.toml",
+    "pixi.lock",
+    ".pixi",
+    "pipeline",
+    "docs",
+    "data",
+    "launches",
+    "work",
+    "results",
+    ".worktrees",
+]
+"code/data" = ["raw", "store"]
+"code/results" = ["runs", "final"]
+"code/pipeline" = ["main.nf", "nextflow.config", "conf", "modules", "subworkflows", "bin"]
+"code/pipeline/bin" = ["pyproject.toml", "research_project", "tests"]
+
+# File kinds and the only path prefixes where they may live. Files under run
+# records, data directories, worktrees and environments are not scanned.
+[[placement]]
+kind = "Python source"
+patterns = ["*.py"]
+allowed = ["code/pipeline/bin/"]
+
+[[placement]]
+kind = "Nextflow script or configuration"
+patterns = ["*.nf", "*.config"]
+allowed = ["code/pipeline/"]
+
+[[placement]]
+kind = "Skill definition"
+patterns = ["SKILL.md"]
+allowed = [".agents/skills/"]
+
+[[placement]]
+kind = "Data file"
+patterns = [
+    "*.csv", "*.tsv", "*.parquet", "*.feather", "*.arrow", "*.xlsx",
+    "*.h5", "*.hdf5", "*.h5ad", "*.zarr", "*.npy", "*.npz", "*.pkl", "*.pickle", "*.rds",
+    "*.fastq", "*.fq", "*.fasta", "*.fa", "*.bam", "*.sam", "*.cram", "*.vcf", "*.bed",
+    "*.gz", "*.bz2", "*.zst", "*.zip", "*.tar",
+]
+allowed = ["code/data/", "manuscript/"]
